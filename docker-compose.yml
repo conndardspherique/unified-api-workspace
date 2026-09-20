@@ -1,0 +1,29 @@
+services:
+  api:
+    build: .
+    container_name: unified-api
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      PORT: 3000
+      DATABASE_URL: postgresql://unified_api:unified_api_dev@postgres:5432/unified_api
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: unified-api-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: unified_api
+      POSTGRES_PASSWORD: unified_api_dev
+      POSTGRES_DB: unified_api
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./src/db/schema.sql:/docker-entrypoint-initdb.d/schema.sql:ro
+
+volumes:
+  postgres_data:

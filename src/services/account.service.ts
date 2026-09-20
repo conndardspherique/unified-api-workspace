@@ -1,41 +1,40 @@
-import type { Account, ProviderType } from "../types/account.js";
+import type { Account } from "../types/account.js";
 import type { Message, SendMessage } from "../types/message.js";
 import type { MessagingProvider } from "../providers/provider.interface.js";
 import { GmailProvider } from "../providers/gmail.provider.js";
 import { OutlookProvider } from "../providers/outlook.provider.js";
+import { AccountRepository } from "../repositories/account.repository.js";
 
 export class AccountService {
-  private readonly accounts: Account[] = [
-    {
-      id: "acc_gmail_001",
-      provider: "gmail",
-      identifier: "demo@gmail.com",
-      displayName: "Demo Gmail"
-    },
-    {
-      id: "acc_outlook_001",
-      provider: "outlook",
-      identifier: "demo@outlook.com",
-      displayName: "Demo Outlook"
-    }
-  ];
+  private readonly repository: AccountRepository;
 
-  private readonly providers: Record<ProviderType, MessagingProvider> = {
+  private readonly providers: Record<string, MessagingProvider> = {
     gmail: new GmailProvider(),
-    outlook: new OutlookProvider(),
-    linkedin: new GmailProvider()
+    outlook: new OutlookProvider()
   };
 
-  getAccounts(): Account[] {
-    return this.accounts;
+  constructor() {
+    this.repository = new AccountRepository();
   }
 
-  getAccount(accountId: string): Account | undefined {
-    return this.accounts.find((account) => account.id === accountId);
+  async getAccounts(): Promise<Account[]> {
+    return this.repository.findAll();
+  }
+
+  async getAccount(accountId: string): Promise<Account | undefined> {
+    return this.repository.findById(accountId);
+  }
+
+  async createAccount(account: Account): Promise<Account> {
+    if (!this.providers[account.provider]) {
+      throw new Error("Unsupported provider");
+    }
+
+    return this.repository.create(account);
   }
 
   async getMessages(accountId: string): Promise<Message[]> {
-    const account = this.getAccount(accountId);
+    const account = await this.getAccount(accountId);
 
     if (!account) {
       throw new Error("Account not found");
@@ -50,7 +49,7 @@ export class AccountService {
     accountId: string,
     message: SendMessage
   ): Promise<Message> {
-    const account = this.getAccount(accountId);
+    const account = await this.getAccount(accountId);
 
     if (!account) {
       throw new Error("Account not found");

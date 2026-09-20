@@ -8,5 +8,6 @@ router.get("/", controller.getAccounts);
 router.get("/:id", controller.getAccount);
 router.get("/:id/messages", controller.getMessages);
 router.post("/:id/messages", controller.sendMessage);
+router.post("/", controller.createAccount);
 
 export default router;
