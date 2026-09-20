@@ -1,0 +1,33 @@
+{
+  "name": "unified-api-workspace",
+  "version": "1.0.0",
+  "description": "backend typescript destiné a tester l'unification de différentes API externes ",
+  "type": "module",
+  "scripts": {
+    "test": "vitest",
+    "dev": "tsx watch src/app.ts",
+    "build": "tsc",
+    "start": "node dist/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/conndardspherique/unified-api-workspace.git"
+  },
+  "keywords": [],
+  "bugs": {
+    "url": "https://github.com/conndardspherique/unified-api-workspace/issues"
+  },
+  "homepage": "https://github.com/conndardspherique/unified-api-workspace#readme",
+  "dependencies": {
+    "dotenv": "^18.0.1",
+    "express": "^5.2.1",
+    "pg": "^8.23.0"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^26.6.2",
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.1"
+  }
+}
